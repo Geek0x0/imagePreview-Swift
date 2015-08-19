@@ -1,3 +1,15 @@
 # imagePreview-Swift
-Image Preview 图片预览库<br>
-基于Xcode7 Swift 2.0环境，用于放大图片预览仅需设定图片URL数组即可
+图片放大预览库
+
+##编译环境
+- iOS 8.0+
+- Xcode 7.0 beta 5+
+
+##使用说明
+初始化(可的定义起始位置)<br>
+```swift
+let ImageViewer: imagePreview = 
+  imagePreview(frame: parentView.frame, imageURLs: allImageURLs,
+  index: selectedImageIndex)
+```
+更多信息请看Demo
