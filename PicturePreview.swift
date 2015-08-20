@@ -51,13 +51,13 @@ class imagePreview: UIView, UIScrollViewDelegate {
             }.resume()
     }
     
-    private func downloadImage(urlString: String, imageView: UIImageView, waitView: UIView?){
+    private func downloadImage(urlString: String, imageView: UIImageView?, waitView: UIView?){
         let url: NSURL = NSURL(string: urlString)!
         self.getDataFromUrl(url) { data in
             dispatch_async(dispatch_get_main_queue()) {
                 if let imageData: NSData = data {
-                    imageView.image = UIImage(data: imageData)
-                    imageView.hidden = false
+                    imageView?.image = UIImage(data: imageData)
+                    imageView?.hidden = false
                     waitView?.removeFromSuperview()
                 }
             }
