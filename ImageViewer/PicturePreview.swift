@@ -16,13 +16,17 @@ class imagePreview: UIView, UIScrollViewDelegate {
     private var viewFrame: CGRect!
     private var indexOfCurrentPage: Int = 1
     private var allImageView: [UIImageView] = []
+    var lastScale: CGFloat = 0
     
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
     
-    convenience init(frame: CGRect, imageURLs: [String], index: Int) {
-        self.init(frame: frame)
+    convenience init(imageURLs: [String], index: Int) {
+        let mainWindow: UIWindow =
+            UIApplication.sharedApplication().keyWindow! as UIWindow
+        self.init(frame: mainWindow.frame)
+        
         self.imageURLs = imageURLs
         self.viewFrame = frame
         
@@ -32,22 +36,9 @@ class imagePreview: UIView, UIScrollViewDelegate {
         self.initNumberTitle()
         self.addSubview(self.title)
         
-        let closeTap: UITapGestureRecognizer =
-        UITapGestureRecognizer(target: self,
-            action: Selector("dismissImageViewer:"))
-        closeTap.numberOfTapsRequired = 1
-        self.addGestureRecognizer(closeTap)
+        self.movingToFocus(index)
         
-        if index != 0 {
-            if index >= self.imageURLs.count {
-                return
-            } else {
-                let xpoint: CGFloat = CGFloat(index) * self.viewFrame.width
-                self.imageScrollView.setContentOffset(CGPoint(x: xpoint, y: 0), animated: false)
-                self.indexOfCurrentPage = index + 1
-                self.updateNumberTitle()
-            }
-        }
+        self.initGestures()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -79,10 +70,11 @@ class imagePreview: UIView, UIScrollViewDelegate {
     }
     
     private func initScrollViewItemView() {
-        let imageScrollViewFrame: CGRect = CGRect(x: self.viewFrame.origin.x,
-            y: self.viewFrame.origin.y,
-            width: self.viewFrame.width,
-            height: self.viewFrame.height * 0.85)
+        let imageScrollViewFrame: CGRect =
+            CGRect(x: self.viewFrame.origin.x,
+                y: self.viewFrame.origin.y,
+                width: self.viewFrame.width,
+                height: self.viewFrame.height)
         self.imageScrollView.frame = imageScrollViewFrame
         self.imageScrollView.center = self.center
         
@@ -118,6 +110,23 @@ class imagePreview: UIView, UIScrollViewDelegate {
         self.imageScrollView.pagingEnabled = true
         self.imageScrollView.delegate = self
         self.imageScrollView.showsHorizontalScrollIndicator = false
+        
+        self.imageScrollView.userInteractionEnabled = true
+        self.imageScrollView.multipleTouchEnabled = true
+    }
+    
+    private func movingToFocus(index: Int) {
+        if index != 0 {
+            if index >= self.imageURLs.count {
+                return
+            } else {
+                let xpoint: CGFloat = CGFloat(index) * self.viewFrame.width
+                self.imageScrollView.setContentOffset(CGPoint(x: xpoint, y: 0),
+                    animated: false)
+                self.indexOfCurrentPage = index + 1
+                self.updateNumberTitle()
+            }
+        }
     }
     
     private func initNumberTitle() {
@@ -139,6 +148,7 @@ class imagePreview: UIView, UIScrollViewDelegate {
     
     @objc private func dismissImageViewer(sender:UITapGestureRecognizer){
         self.title.hidden = true
+        self.setCloseWindowLebel()
         UIView.animateWithDuration(0.3, delay: 0.0,
             options: UIViewAnimationOptions.CurveEaseOut, animations: {
                 self.backgroundColor = UIColor(white:1, alpha: 0)
@@ -146,6 +156,43 @@ class imagePreview: UIView, UIScrollViewDelegate {
             }, completion: {(value:Bool) in
                 self.removeFromSuperview()
         })
+    }
+    
+    @objc private func imageScalingAction(sender: UIPinchGestureRecognizer) {
+        
+        if let image = sender.view {
+            if sender.state == .Ended {
+                self.lastScale = 1.0
+                return
+            }
+            
+            let newScale: CGFloat = 1.0 - (self.lastScale - sender.scale)
+            let currentTransform: CGAffineTransform = image.transform
+            let newTransform: CGAffineTransform =
+                CGAffineTransformScale(currentTransform, newScale, newScale)
+            image.transform = newTransform
+            self.lastScale = sender.scale
+        }
+    }
+    
+    private func initGestures() {
+        //close
+        let closeTap: UITapGestureRecognizer =
+        UITapGestureRecognizer(target: self,
+            action: Selector("dismissImageViewer:"))
+        
+        closeTap.numberOfTapsRequired = 1
+        self.addGestureRecognizer(closeTap)
+        
+        //scaling
+        for imageView in self.allImageView {
+            let scalingTap: UIPinchGestureRecognizer =
+            UIPinchGestureRecognizer(target: self,
+                action: Selector("imageScalingAction:"))
+            imageView.userInteractionEnabled = true
+            imageView.multipleTouchEnabled = true
+            imageView.addGestureRecognizer(scalingTap)
+        }
     }
     
     func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
@@ -160,5 +207,38 @@ class imagePreview: UIView, UIScrollViewDelegate {
             }
         }
         self.updateNumberTitle()
+    }
+    
+    func scrollViewWillEndDragging(scrollView: UIScrollView, withVelocity velocity: CGPoint,
+        targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+            for imageView in self.allImageView {
+                imageView.transform = CGAffineTransformMakeScale(1, 1)
+            }
+    }
+    
+    private func setOpenWindowLevel() {
+        dispatch_async(dispatch_get_main_queue(), {
+            if let window = UIApplication.sharedApplication().keyWindow {
+                window.windowLevel = UIWindowLevelStatusBar + 1
+            }
+        })
+    }
+    
+    private func setCloseWindowLebel() {
+        dispatch_async(dispatch_get_main_queue(), {
+            if let window = UIApplication.sharedApplication().keyWindow {
+                window.windowLevel = UIWindowLevelNormal
+            }
+        })
+    }
+    
+    internal func show() {
+        let mainWindow: UIWindow =
+            UIApplication.sharedApplication().keyWindow! as UIWindow
+        mainWindow.addSubview(self)
+        self.setOpenWindowLevel()
+        UIView.animateWithDuration(0.3, animations:{
+            self.backgroundColor = UIColor(white:0, alpha: 1)
+        })
     }
 }
