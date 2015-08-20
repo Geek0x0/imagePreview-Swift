@@ -82,7 +82,7 @@ class imagePreview: UIView, UIScrollViewDelegate {
         let imageScrollViewFrame: CGRect = CGRect(x: self.viewFrame.origin.x,
             y: self.viewFrame.origin.y,
             width: self.viewFrame.width,
-            height: self.viewFrame.height * 0.8)
+            height: self.viewFrame.height * 0.85)
         self.imageScrollView.frame = imageScrollViewFrame
         self.imageScrollView.center = self.center
         
@@ -123,10 +123,13 @@ class imagePreview: UIView, UIScrollViewDelegate {
     private func initNumberTitle() {
         let titleWidth: CGFloat = 100
         self.title.frame = CGRect(x: (self.frame.width - titleWidth) / 2,
-            y: 25, width: titleWidth, height: 30)
+            y: 10, width: titleWidth, height: 30)
         self.title.font = UIFont.boldSystemFontOfSize(20)
         self.title.textColor = UIColor.whiteColor()
         self.title.textAlignment = .Center
+        self.title.backgroundColor = UIColor(white: 0, alpha: 0.5)
+        self.title.layer.masksToBounds = true
+        self.title.layer.cornerRadius = 5
         self.updateNumberTitle()
     }
     
@@ -134,7 +137,7 @@ class imagePreview: UIView, UIScrollViewDelegate {
         self.title.text = "\(self.indexOfCurrentPage) / \(self.imageURLs.count)"
     }
     
-    func dismissImageViewer(sender:UITapGestureRecognizer){
+    @objc private func dismissImageViewer(sender:UITapGestureRecognizer){
         self.title.hidden = true
         UIView.animateWithDuration(0.3, delay: 0.0,
             options: UIViewAnimationOptions.CurveEaseOut, animations: {
@@ -147,7 +150,6 @@ class imagePreview: UIView, UIScrollViewDelegate {
     
     func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let translation = scrollView.panGestureRecognizer.translationInView(scrollView).x
-        
         if translation < 0 {
             if self.indexOfCurrentPage < self.imageURLs.count {
                 self.indexOfCurrentPage++
