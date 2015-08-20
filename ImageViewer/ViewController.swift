@@ -20,7 +20,6 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-
     @IBAction func ShowImage(sender: UIButton) {
         let url = ["http://dwz.cn/image1",
             "http://dwz.cn/image2",
