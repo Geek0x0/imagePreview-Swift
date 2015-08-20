@@ -22,17 +22,12 @@ class ViewController: UIViewController {
 
 
     @IBAction func ShowImage(sender: UIButton) {
-        let mainWindow: UIWindow =
-        UIApplication.sharedApplication().keyWindow! as UIWindow
         let url = ["http://dwz.cn/image1",
             "http://dwz.cn/image2",
             "http://dwz.cn/image4"]
         
         let ImageViewer: imagePreview =
-            imagePreview(frame: mainWindow.frame, imageURLs: url, index: 0)
-        mainWindow.addSubview(ImageViewer)
-        UIView.animateWithDuration(0.3, animations:{
-            ImageViewer.backgroundColor = UIColor(white:0, alpha: 1)
-        })
+            imagePreview(imageURLs: url, index: 0)
+        ImageViewer.show()
     }
 }
