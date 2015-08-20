@@ -92,7 +92,7 @@ class imagePreview: UIView, UIScrollViewDelegate {
             waitView.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
             waitView.activityIndicatorViewStyle =
                 UIActivityIndicatorViewStyle.WhiteLarge
-            waitView.center = CGPoint(x: self.center.x, y: self.center.y - 50)
+            waitView.center = self.center
             waitView.startAnimating()
             
             imageView.addSubview(waitView)
