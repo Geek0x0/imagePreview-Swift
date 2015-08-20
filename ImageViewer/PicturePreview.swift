@@ -135,6 +135,7 @@ class imagePreview: UIView, UIScrollViewDelegate {
     }
     
     func dismissImageViewer(sender:UITapGestureRecognizer){
+        self.title.hidden = true
         UIView.animateWithDuration(0.3, delay: 0.0,
             options: UIViewAnimationOptions.CurveEaseOut, animations: {
                 self.backgroundColor = UIColor(white:1, alpha: 0)
