@@ -83,8 +83,10 @@ class imagePreview: UIView, UIScrollViewDelegate {
         for var index = 0; index < self.imageURLs.count; index++ {
             /* 图片显示视图 */
             let imageViewFrame: CGRect = CGRect(x: xpoint, y: 0,
-                width: imageScrollViewFrame.width, height: imageScrollViewFrame.height)
+                width: imageScrollViewFrame.width,
+                height: imageScrollViewFrame.height)
             let imageView: UIImageView = UIImageView(frame: imageViewFrame)
+            imageView.contentMode = .ScaleAspectFit
             allImageView.append(imageView)
             xpoint += imageScrollViewFrame.width
             
