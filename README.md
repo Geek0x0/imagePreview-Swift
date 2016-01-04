@@ -1,4 +1,6 @@
 # imagePreview-Swift
+[![ghit.me](https://ghit.me/badge.svg?repo=caydyn-skd/imagePreview-Swift)](https://ghit.me/repo/caydyn-skd/imagePreview-Swift)
+
 图片放大预览<br>
 [the image preview library]<br><br>
 功能: 单击图片关闭，两指捏合可缩放<br>
