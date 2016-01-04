@@ -1,5 +1,8 @@
 # imagePreview-Swift
 [![ghit.me](https://ghit.me/badge.svg?repo=caydyn-skd/imagePreview-Swift)](https://ghit.me/repo/caydyn-skd/imagePreview-Swift)
+[![Language](http://img.shields.io/badge/language-swift-orange.svg?style=flat)](https://developer.apple.com/swift)
+[![Platform](https://img.shields.io/badge/platform-ios-lightgrey.svg?style=flat)](https://developer.apple.com/resources/)
+[![Issues](https://img.shields.io/github/issues/caydyn-skd/imagePreview-Swift.svg?style=flat)](https://github.com/caydyn-skd/imagePreview-Swift/issues)
 
 图片放大预览<br>
 [the image preview library]<br><br>
